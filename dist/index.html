@@ -240,21 +240,29 @@
       </div>
     </div>
     <script>window.gtag = function() { console.log('analytics removed'); }</script>
-    <div>
+    <div
+      id="hacking-image-container"
+      style="
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+      "
+    >
       <img
         id="hacking-image"
         src=""
         width="auto"
         style="
           display: none;
-          position: absolute;
-          top: 80px;
-          left: 300px;
           min-width: 300px;
           max-width: 450px;
           max-height: 600px;
-          z-index: 9999;
-          bottom: 100px;
         "
       />
     </div>

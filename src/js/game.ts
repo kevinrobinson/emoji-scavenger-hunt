@@ -456,12 +456,14 @@ export class Game {
 
       // prefetch
       imageKeys.forEach(imageKey => new Image().src = '/img/'  + imageKey + '.png');
+      document.getElementById('hacking-image-container').style.display = 'flex';
+      document.getElementById('hacking-image').style.display = 'block';
 
       // remove camera ui (but haven't yet removed recording etc since might want it for game)
       // @ts-ignore
       document.querySelectorAll('.camera__capture-wrapper')[0].style.display = 'none';
       // @ts-ignore
-      document.querySelectorAll('.view__camera')[0].style.background = '#e61bd5';
+      document.querySelectorAll('.view__camera')[0].style.background = '#2f2f2f';
 
       ui.showView(VIEWS.LOADING);
       Promise.all([
