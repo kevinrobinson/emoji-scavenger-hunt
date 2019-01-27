@@ -1,5 +1,6 @@
 node_modules/
 package-lock.json
+dist/img/
 dist/js/
 dist/css/
 cors-settings.json
