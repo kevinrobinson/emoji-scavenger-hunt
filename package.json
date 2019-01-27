@@ -6,8 +6,8 @@
   "scripts": {
     "prep": "yarn && yarn prep:files && yarn build",
     "prep:files": "mkdirp dist && mkdirp dist/js && touch dist/js/bundle.js",
-    "sass-watch": "node-sass -w src/sass/main.scss dist/css/main.min.css",
-    "sass-build": "node-sass src/sass/main.scss dist/css/main.min.css --output-style compressed",
+    "sass-watch": "cp -r hacking/* dist && echo node-sass -w src/sass/main.scss dist/css/main.min.css",
+    "sass-build": "cp -r hacking/* dist && echo node-sass src/sass/main.scss dist/css/main.min.css --output-style compressed",
     "js-watch": "watchify src/js/index.ts -p [tsify] -o dist/js/bundle.js -v --debug",
     "js-build": "browserify src/js/index.ts -p [tsify] -o dist/js/bundle.js",
     "js-compress": "uglifyjs dist/js/bundle.js -c -m -o dist/js/bundle.js",

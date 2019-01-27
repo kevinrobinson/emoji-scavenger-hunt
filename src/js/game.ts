@@ -75,8 +75,13 @@ export const AUDIO = {
   IOS_SPEECH_SPRITE: 'iosspeechsprite'
 };
 
+
 /** Manages game state and various tasks related to game events. */
 export class Game {
+  // add for hacking
+  selectedImageKey: string;
+  hackingEl: HTMLImageElement;
+
   /** Our MobileNet instance and how we get access to our trained model. */
   emojiScavengerMobileNet: MobileNet;
   isRunning: boolean;
@@ -366,7 +371,11 @@ export class Game {
         // send image data from the camera to the predict engine we slice a
         // 244 pixel area out of the center of the camera screen to ensure
         // better matching against our model.
-        const pixels = tfc.fromPixels(camera.videoElement);
+        console.log('predicting from selectedImageKey: ', game.selectedImageKey, this.hackingEl.src);
+        const pixels = tfc.fromPixels(this.hackingEl);
+        // const pixels = tfc.fromPixels(camera.videoElement);
+        console.log('pixels', pixels);
+
         const centerHeight = pixels.shape[0] / 2;
         const beginHeight = centerHeight - (VIDEO_PIXELS / 2);
         const centerWidth = pixels.shape[1] / 2;
@@ -374,7 +383,7 @@ export class Game {
         const pixelsCropped =
               pixels.slice([beginHeight, beginWidth, 0],
                            [VIDEO_PIXELS, VIDEO_PIXELS, 3]);
-
+        console.log('pixelsCropped', pixelsCropped);
         return this.emojiScavengerMobileNet.predict(pixelsCropped);
       });
 
@@ -422,6 +431,28 @@ export class Game {
         ui.cameraFPSEl.appendChild(this.stats.dom);
       }
 
+      // @ts-ignore
+      this.selectedImageKey = document.getElementById('hacking-image-code').value;
+
+      // prefetch
+      const imageKeys = [
+        '0','1','2','3','4','5','6','7','8','9',
+        'a1',
+        'b1','b2','b3','b4','b5','b6'
+      ];
+      imageKeys.forEach(imageKey => new Image().src = '/img/'  + imageKey + '.png');
+
+      // remove camera ui (but still recording etc)
+      // @ts-ignore
+      document.querySelectorAll('.camera__capture-wrapper')[0].style.display = 'none';
+
+      // @ts-ignore
+      document.getElementById('hacking-image-code').addEventListener('change', (e) => {
+        this.selectedImageKey = (<HTMLInputElement>e.target).value;
+        this.onKeyChanged();
+      })
+      this.onKeyChanged();
+
       ui.showView(VIEWS.LOADING);
       Promise.all([
         this.emojiScavengerMobileNet.load().then(() => this.warmUpModel()),
@@ -464,6 +495,12 @@ export class Game {
     }
   }
 
+  onKeyChanged() {
+    this.hackingEl = <HTMLImageElement>document.getElementById('hacking-image');
+    this.hackingEl.src = '/img/'  + this.selectedImageKey + '.png';
+    this.hackingEl.style.display = 'block';
+    console.log('hackingEl', this.hackingEl);
+  }
   /**
    * Starts the game by setting the game to running, playing audio and
    * registering the game timer and speech intervals.
@@ -561,6 +598,9 @@ export class Game {
    * @param msg
    */
   speak(msg: string) {
+    // console.log('this.hackingEl', this.hackingEl);
+    // this.hackingEl.style.display = 'block';
+
     if (this.topItemGuess) {
       if ('speechSynthesis' in window) {
         let msgSpeak = new SpeechSynthesisUtterance();
@@ -577,7 +617,9 @@ export class Game {
    * (currently every second)
    */
   handleGameTimerCountdown() {
+    return;
 
+    /*
     if (this.timer === 0) {
       this.pauseAudio(AUDIO.GAME_LOOP);
       this.pauseAudio(AUDIO.TIME_RUNNING_LOW);
@@ -606,6 +648,7 @@ export class Game {
     }
 
     this.timer--;
+    */
   }
 
   /**
