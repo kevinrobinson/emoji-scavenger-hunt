@@ -128,7 +128,7 @@ export class Game {
   /** An array of snapshots taken when the model finds an emoji. */
   endGamePhotos: Array<HTMLImageElement>;
   demoMode = false;
-  debugMode = false;
+  debugMode = true;
   gameIsPaused = false;
   firstRun = true;
   firstSpeak = true;
@@ -190,8 +190,8 @@ export class Game {
       this.demoMode = true;
     }
 
-    if (getQueryParam('debug') === 'true') {
-      this.debugMode = true;
+    if (getQueryParam('debug') === 'false') {
+      this.debugMode = false;
     }
 
     // Calls to window.speechSynthesis.getVoices() are async hence we call our
@@ -431,27 +431,37 @@ export class Game {
         ui.cameraFPSEl.appendChild(this.stats.dom);
       }
 
+      const imageKeys = [
+        '1','2','3','4','5','6','7',
+        'a1',
+        'b1','b2','b3','b4','b5','b6',
+        'c1','c2','c3','c4','c5','c6'
+      ];
+      imageKeys.forEach(imageKey => {
+        const option = document.createElement('option');
+        option.value = imageKey;
+        option.innerHTML = imageKey;
+        document.getElementById('hacking-image-code').appendChild(option);
+      });
+      document.getElementById('hacking-image-code').style.display = 'block';
+
       // @ts-ignore
       this.selectedImageKey = document.getElementById('hacking-image-code').value;
-
-      // prefetch
-      const imageKeys = [
-        '0','1','2','3','4','5','6','7','8','9',
-        'a1',
-        'b1','b2','b3','b4','b5','b6'
-      ];
-      imageKeys.forEach(imageKey => new Image().src = '/img/'  + imageKey + '.png');
-
-      // remove camera ui (but still recording etc)
-      // @ts-ignore
-      document.querySelectorAll('.camera__capture-wrapper')[0].style.display = 'none';
-
       // @ts-ignore
       document.getElementById('hacking-image-code').addEventListener('change', (e) => {
         this.selectedImageKey = (<HTMLInputElement>e.target).value;
         this.onKeyChanged();
       })
       this.onKeyChanged();
+
+      // prefetch
+      imageKeys.forEach(imageKey => new Image().src = '/img/'  + imageKey + '.png');
+
+      // remove camera ui (but haven't yet removed recording etc since might want it for game)
+      // @ts-ignore
+      document.querySelectorAll('.camera__capture-wrapper')[0].style.display = 'none';
+      // @ts-ignore
+      document.querySelectorAll('.view__camera')[0].style.background = '#e61bd5';
 
       ui.showView(VIEWS.LOADING);
       Promise.all([

@@ -250,7 +250,9 @@
           position: absolute;
           top: 80px;
           left: 300px;
-          width: 450px;
+          min-width: 300px;
+          max-width: 450px;
+          max-height: 600px;
           z-index: 9999;
           bottom: 100px;
         "
@@ -265,18 +267,18 @@
         width: 20%;
       "
     >
-      <input
+      <select
         id="hacking-image-code"
-        type="text"
-        placeholder="image code (eg, b1)"
-        value="b1"
         style="
+          display: none;
           width: 100%;
           background: white;
           font-size: 32px;
           padding: 10px;
         "
-      /></div>
+      >
+      </select>
+    </div>
     <script src="js/bundle.js"></script>
   </body>
 </html>
